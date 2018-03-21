@@ -1,0 +1,88 @@
+
+.footer-bar ~ .content {
+    margin-bottom: 51px;
+  }
+  
+.play-station {
+      margin-top: 5px;
+}
+.station-row {
+      padding: 3px 0px 3px 5px;
+}
+.station-row .station-logo {
+      height: 50px;
+}
+.station-row .station-info {
+    margin: 0 60px;
+    line-height: 1em;
+}
+.station-info .subline {
+    font-size: .8em;
+}
+
+.footer-bar {
+    backface-visibility: hidden;
+    position: fixed;
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+    display: block;
+    width: 100%;
+    height: 50px;
+    -webkit-backface-visibility: hidden;
+}
+  
+  .footer-bar .radio-info {
+      background: #333;
+      color: #fff;
+      display: block;
+      height: 35px;
+      
+      padding: 2px 3px 0;
+  }
+  
+  .footer-bar .radio {
+      background-color: #f1f1f1;
+      display: block;
+      height: 50px;
+      overflow: hidden;
+      padding-left: 50px;
+      padding-top: 3px;
+  }
+  .radio-image {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 40px;
+      height: 40px;
+  }
+  .radio-status {
+      overflow: hidden;
+  }
+  
+  .radio-status-title,
+  .radio-status-name {
+      line-height: 20px;
+    white-space: nowrap;
+  }
+  .radio-status-title {
+      font-weight: bold;
+  }
+  .radio-status-name {
+    font-size: .8em;
+}
+    .station-row .with-circle {
+      background-color: #fff;
+  }
+  
+  .station-details {
+      margin: 5px 15px;
+  }
+  
+  .station-details .center {
+      text-align: center;
+  }
+  
+  

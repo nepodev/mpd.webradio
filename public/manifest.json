@@ -1,0 +1,11 @@
+{
+    "icons": [
+        {
+            "sizes": "192x192",
+            "src": "icon.png",
+            "type": "image/png"
+        }
+    ],
+    "name": "MPD.Webradio",
+    "start_url": "/"
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=MPD.Webradio
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/node /opt/mpd.webradio/index.js
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=mpd-webradio
+User=mpd-wr
+Group=mpd-wr
+
+Environment=NODE_ENV=production
+
+
+[Install]
+WantedBy=multi-user.target
+
