@@ -29,7 +29,7 @@ Install the project under `/opt` using git
 
 ```console
 cd /opt
-git clone https://github.com/nepodev/
+git clone https://github.com/nepodev/mpd.webradio.git
 ```
 
 Install Nodejs dependencies
