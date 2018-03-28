@@ -89,3 +89,14 @@
     line-height: 1.3em;
     margin: 5px 0;
 }
+
+.not_playable button {
+    display: none;
+}
+.not_playable .subline {
+    text-indent: -9999em;
+}
+.not_playable .subline::after {
+    content: " (NOT PLAYABLE)";
+    font-weight: bold;
+}
