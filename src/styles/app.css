@@ -85,4 +85,7 @@
       text-align: center;
   }
   
-  
+.station-row .station-info .title {
+    line-height: 1.3em;
+    margin: 5px 0;
+}
