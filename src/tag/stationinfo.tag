@@ -6,7 +6,7 @@
         </header>
 
         <div class="content">
-            <div id="station-details" class="station-details {opts.station.playable.toLowerCase()}">
+            <div id="station-details" class="station-details {opts.station.playable && opts.station.playable.toLowerCase()}">
                 <h2 class="station-name center">{opts.station.name}</h2>
                 <p class="station-logo center" if="{opts.station.id}">
                     <img class="station-logo" src="{getStationImageUrl(opts.station)}" onerror="{action.onImageError}">
