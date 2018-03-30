@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "A Webclient / -server to listen Webradio via MPD",
   "main": "index.js",
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "https://github.com/nepodev/mpd.webradio.git"
+  },
   "scripts": {
     "dev:server": "nodemon index.js",
     "dev:public": "webpack --config build/webpack.dev.config.js",
