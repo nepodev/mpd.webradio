@@ -17,7 +17,7 @@ MPD.Webradio is a simple Webservice that makes it easy to listen Webradio via MP
 * [MPD](https://www.musicpd.org/)
 * [Nodejs](https://nodejs.org/en/)
 
-## Installion
+## Installation simple
 
 ```console
 git clone https://github.com/nepodev/mpd.webradio.git
@@ -43,7 +43,7 @@ git clone https://github.com/nepodev/mpd.webradio.git
 cd /opt/mpd.webradio
 npm install --production
 
-# Grand access for `mpd-wr` to subdirectory  `var`
+# Grand access for mpd-wr to subdirectory  var
 chown mpd-wr:mpd-wr /opt/mpd.webradio/var/
 
 # Create Systemd service
