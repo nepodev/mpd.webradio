@@ -17,41 +17,40 @@ MPD.Webradio is a simple Webservice that makes it easy to listen Webradio via MP
 * [MPD](https://www.musicpd.org/)
 * [Nodejs](https://nodejs.org/en/)
 
-## Installation
-
-Create a new User `mpd-wr`
+## Installion
 
 ```console
-useradd -rU -s /bin/false mpd-wr
+git clone https://github.com/nepodev/mpd.webradio.git
+cd mpd.webradio
+npm install --production
+npm start
 ```
 
-Install the project under `/opt` using git
+Point your Browser to IP of your Pi and Port `4711`.
+i. e.: `http://192.168.1.5:4711`
+
+## Installation as Service
 
 ```console
+# Create a new User mpd-wr
+useradd -rU -s /bin/false mpd-wr
+
+# Install the project under /opt
 cd /opt
 git clone https://github.com/nepodev/mpd.webradio.git
-```
 
-Install Nodejs dependencies
-
-```console
+# Install Nodejs dependencies
 cd /opt/mpd.webradio
 npm install --production
-```
 
-Grand access for `mpd-wr` to subdirectory  `var`
-
-```console
+# Grand access for `mpd-wr` to subdirectory  `var`
 chown mpd-wr:mpd-wr /opt/mpd.webradio/var/
-```
 
-Create Systemd service
-
-```console
+# Create Systemd service
 cp /opt/mpd.webradio/systemd/mpd.webradio.service /etc/systemd/system/
-
 systemctl enable mpd.webradio
 systemctl start mpd.webradio
+
 ```
 
 Check service is running
