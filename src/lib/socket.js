@@ -15,6 +15,9 @@ const connect = () => {
         return
     }
     var url = 'ws://' + location.hostname + (location.port ? ':' + location.port : '');
+    // add path
+    url += (location.pathname.substr(-5) === '.html') ? location.pathname.match(/.*\//)[0] : location.pathname;
+    
     socket =  new ReconnectingWebSocket(url);
     socket.onopen = () => {
         while (messageQueue.length > 0) {
