@@ -7,5 +7,5 @@
         }
     ],
     "name": "MPD.Webradio",
-    "start_url": "/"
+    "start_url": "."
 }
