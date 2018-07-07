@@ -91,7 +91,7 @@ const onMessage = function(message) {
 
         case 'STATION_DETAILS':
             if (! data) {
-                phonon.notif('Stationinfo not available.', 3000, true, 'CANCEL');
+                //phonon.notif('Stationinfo not available.', 3000, true, 'CANCEL');
                 return
             }
             if (options.reason == "radioStation" && this.radio.file == data.streamURL) {
