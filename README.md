@@ -12,7 +12,6 @@ MPD.Webradio is a simple Webservice that makes it easy to listen Webradio via MP
 * Mark your Favorite Stations
 * Responsive Website made with [Phonon Framework](http://phonon.quarkdev.com/)
 
-Example: http://xaxis.netprog.de/mpd-webradio
 
 ## Requirements
 
