@@ -14,7 +14,6 @@
                 <li><a onclick="{onGetStationList}" data-list-type="local" data-indicator="true" data-side-panel-close="true" class="padded-list">Local Stations</a></li>
                 <li><div class="padded-bottom"></div></li>
                 <li><a onclick="{onGetCategoryList}" data-list-category="genre" data-indicator="true" data-side-panel-close="true" class="padded-list">Genres</a></li>
-                <li><a onclick="{onGetCategoryList}" data-list-category="topic" data-indicator="true" data-side-panel-close="true" class="padded-list">Topics</a></li>
                 <li><a onclick="{onGetCategoryList}" data-list-category="country" data-indicator="true" data-side-panel-close="true" class="padded-list">Countries</a></li>
                 <li><a onclick="{onGetCategoryList}" data-list-category="language" data-indicator="true" data-side-panel-close="true" class="padded-list">Languages</a></li>
             </ul>
