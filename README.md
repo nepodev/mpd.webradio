@@ -76,6 +76,8 @@ For customizing create a `config.json` under `/opt/mpd-webradio/var`.
 * `server` Interface and Port to serve the Website.
 * `mpd` Host and Port used by MPD Server
 * `radionet` radio.net API-Server. Values for "language" are english, french, austrian or german.
+* `public` Customize Webpagelist.
+* * `public.mainpage` List on Startpage. Values are local, top, recent or favorite.
 
 ```json
 {
@@ -89,6 +91,9 @@ For customizing create a `config.json` under `/opt/mpd-webradio/var`.
     },
     "radionet": {
         "language": "german"
+    },
+    "public": {
+        "mainpage": "local"
     }
 }
 ```

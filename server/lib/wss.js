@@ -8,6 +8,8 @@ const Store = require('./store');
 var wss = null;
 const {mpdState} = Mpc;
 
+var Config = null;
+
 mpdState.on('change', () => {
     broadcastMessage({
         key: "RADIO_STATUS",
@@ -15,6 +17,9 @@ mpdState.on('change', () => {
     });
 });
 
+function getPublicConfig() {
+    return Config.public
+}
 /**
  * 
  * @param {object} data 
@@ -190,6 +195,10 @@ function onSocketMessage(message) {
             sendMessage(ws, {key, options, data: Store.getFavorites()})
             break;
 
+        case "SYS_CONFIG":
+            sendMessage(ws, {key, options, data: getPublicConfig()})
+            break;
+
         default:
             let error =  {message: "Unknown key"};
             sendMessage(ws, {key, error});
@@ -203,7 +212,8 @@ module.exports = {
      * 
      * @param {object} server 
      */
-    init (server) {
+    init (server, config={}) {
+        Config = config
         wss = new WebSocketServer({ server });
 
         wss.on('error', console.error);

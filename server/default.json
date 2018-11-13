@@ -9,5 +9,8 @@
     },
     "radionet": {
         "language": "german"
+    },
+    "public": {
+        "mainpage": "local"
     }
 }

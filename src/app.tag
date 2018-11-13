@@ -128,6 +128,10 @@ const onMessage = function(message) {
             }
             break
 
+        case 'SYS_CONFIG':
+            opts.socket.sendMessage({key: 'STATION_LIST', options: {type: data.mainpage}})
+            break;
+
         case 'FAV_REMOVE':
         case 'FAV_ADD':
             if (this.stationList.options.type == 'favorite') {
@@ -150,7 +154,8 @@ const onMessage = function(message) {
 
 opts.socket.onMessage(onMessage)
 opts.socket.sendMessage({key: 'RADIO_STATUS'})
-opts.socket.sendMessage({key: 'STATION_LIST', options: {type:'local'}})
+//opts.socket.sendMessage({key: 'STATION_LIST', options: {type:'local'}})
+opts.socket.sendMessage({key: 'SYS_CONFIG'})
 
 this.getRadioInfo = (info) => {
     if (! this.radio.state) {

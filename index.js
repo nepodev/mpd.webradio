@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const server = http.createServer(app);
 
 // add websocket service
-wss.init(server);
+wss.init(server, config);
 
 // config webservice
 server.listen(
