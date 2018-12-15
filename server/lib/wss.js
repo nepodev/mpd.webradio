@@ -150,21 +150,20 @@ function onSocketMessage(message) {
             break
             
         case "RADIO_PLAY_STATION": {
-            // get station from local store
-            // let station = Store.searchStation('id', options.id);
-            // if (station) {
-            //     Mpc.play([station.streamURL]);
-            //     Store.addRecent(station);
-            // }
-            // else {
-                // get station from radio.net
+            let station = Store.searchStation('id', options.id)
+            if (station) {
+                Mpc.play([station.streamURL])
+                Store.addRecent(station);
+                //sendMessage(ws, {key, options, data: Store.getFavorites()})
+            }
+            else {
                 Radionet.getStationById(options.id)
-                    .then(station => {
-                        Mpc.play([station.streamURL]);
-                        Store.addRecent(station);
-                    })
-                    .catch(error => sendMessage(ws, {key, options, error}));
-//            }
+                .then(station => {
+                    Mpc.play([station.streamURL])
+                    Store.addRecent(station);
+                })
+                .catch(error => sendMessage(ws, {key, options, error}));
+            }
             break;
         }
         
