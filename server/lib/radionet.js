@@ -66,11 +66,17 @@ const queryApi = (route, params) => {
             if (response.statusCode < 200 || response.statusCode > 299) {
                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
             }
-            const body = [];
-            response.on('data', chunk => body.push(chunk));
-            response.on('end', () => {
-                resolve(JSON.parse(body.join('')))
-            });
+            else {
+                const body = [];
+                response.on('data', chunk => body.push(chunk));
+                response.on('end', () => {
+                    let json = body.join('');
+                    if (json[0]=='<') {
+                        json = '{"error":"got no json"}'
+                    }
+                    resolve(JSON.parse(json))
+                });
+            }
         });
         request.on('error', (err) => reject(err))
     });
