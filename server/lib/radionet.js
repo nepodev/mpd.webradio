@@ -26,15 +26,6 @@ const CATEGORY_TYPES = [
     'topic'
 ];
 
-const REQUEST_OPTIONS = {
-    host: "",
-    path: "",
-    method: "GET",
-    headers: {
-        "user-agent": "XBMC Addon Radio"
-    }
-}
-
 const PLAYLIST_SUFFIX = [
     '.pls',
     '.xml',
@@ -42,8 +33,16 @@ const PLAYLIST_SUFFIX = [
     '.m3u'
 ]
 
-var api_host = MAIN_DOMAINS.english;
+const BASE_PATH = '/info/'
 
+var request_options = {
+    host: MAIN_DOMAINS.english,
+    path: "",
+    method: "GET",
+    headers: {
+        "user-agent": "XBMC Addon Radio"
+    }
+}
 
 /**
  * 
@@ -52,31 +51,44 @@ var api_host = MAIN_DOMAINS.english;
  * @returns {promise}
  */
 const queryApi = (route, params) => {
-    let opt = {
-        host: api_host,
-        path: '/info/' + route
+    let options = Object.assign({}, request_options, {path: BASE_PATH + route}),
+        queryString = QueryString.stringify(params||{})
+    
+    if (queryString) {
+        options.path += '?' + queryString
     }
-    if (typeof params === 'object') {
-        opt.path += '?' + QueryString.stringify(params);
-    }
-    var options = Object.assign(REQUEST_OPTIONS, opt);
+
     // return new pending promise
     return new Promise((resolve, reject) => {
         const request = Http.get(options, (response) => {
-            if (response.statusCode < 200 || response.statusCode > 299) {
-                reject(new Error('Failed to load page, status code: ' + response.statusCode));
+            const { statusCode } = response;
+            const contentType = response.headers['content-type']
+            let rawData = '',
+                error
+
+            if (statusCode < 200 || statusCode > 299) {
+                error = new Error(`Failed to load page, status code: ${statusCode}`)
             }
-            else {
-                const body = [];
-                response.on('data', chunk => body.push(chunk));
-                response.on('end', () => {
-                    let json = body.join('');
-                    if (json[0]=='<') {
-                        json = '{"error":"got no json"}'
-                    }
-                    resolve(JSON.parse(json))
-                });
+            else if (!/^application\/json/.test(contentType)) {
+                error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`)
             }
+
+            if (error) {
+                response.resume()
+                reject(error)
+            }
+
+            response.setEncoding('utf8')
+            response.on('data', (chunk) => { rawData += chunk; })
+            response.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(rawData);
+                    resolve(parsedData)
+                }
+                catch (e) {
+                    reject(e)
+                }
+            });
         });
         request.on('error', (err) => reject(err))
     });
@@ -109,7 +121,7 @@ const Radionet = module.exports = {
         //radionet_options = options;
         let {language} = options;
         if (language) {
-            api_host = MAIN_DOMAINS[language];
+            request_options.host = MAIN_DOMAINS[language]
         }
     },
 
