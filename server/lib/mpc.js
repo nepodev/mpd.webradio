@@ -74,7 +74,7 @@ function connect() {
 
     mpc.on('system-player', updateStatus);
     mpc.on('system-mixer',  updateStatus);
-};
+}
 
 /** 
  * try reconnect mpd service 
@@ -117,7 +117,7 @@ function doCommand(command, params=[]) {
             params = [1];
         }
         else {
-            command = 'play',
+            command = 'play';
             params = [];
         }
     }
@@ -158,7 +158,7 @@ function updateStatus() {
             }
         }
     );
-};
+}
 
 const MpdClient = module.exports = {
 

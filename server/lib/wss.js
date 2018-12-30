@@ -36,7 +36,7 @@ function sendMessage(ws, data) {
 
 function logError(error) {
     if (error) {
-        console.error
+        console.error(error)
     }
 }
 
@@ -94,13 +94,7 @@ const extendStationInfo = station => {
  */
 function onSocketMessage(message) {
     var ws = this;
-    try {
-        var {key, options} = JSON.parse(message);
-    }
-    catch(error) {
-        logError(error);
-        sendMessage(ws, {error});
-    }
+    var {key, options} = JSON.parse(message||'{}');
 
     switch (key) 
     {
