@@ -207,6 +207,16 @@ module.exports = {
      */
     init (server, config={}) {
         Config = config
+
+        // setup radio.de api
+        Radionet.init(Config.radionet);
+
+        // setup connection to mpd
+        Mpc.init(Config.mpd);
+
+        // setup store
+        Store.init(Config.store)
+
         wss = new WebSocketServer({ server });
 
         wss.on('error', console.error);
