@@ -153,8 +153,7 @@ const Radionet = module.exports = {
      * @returns {promise}
      */
     getStationById (id) {
-        return queryApi('broadcast/getbroadcastembedded', {broadcast: id})
-            .then(data => getStationStreamURL(data))
+        return this.getStation(id)
     },
 
     /**
@@ -164,7 +163,18 @@ const Radionet = module.exports = {
      * @returns {promise}
      */
     getStationPlaylist (id) {
-        return queryApi('playlist/resolveplaylist', {broadcast: id});
+        return this.getStation(id, 'playlist')
+    },
+
+    getStation: (id, section) => {
+        let params = {broadcast: id}
+        if (section === 'playlist') {
+            return queryApi('playlist/resolveplaylist', params);
+        }
+        else {
+            return queryApi('broadcast/getbroadcastembedded', params)
+                .then(data => getStationStreamURL(data))
+        }
     },
 
     /**
@@ -188,6 +198,7 @@ const Radionet = module.exports = {
     /**
      * get values of category.
      * 
+     * @deprecated use getCategory(<category>)
      * @param {string} category
      * @returns {promise}
      */
@@ -197,6 +208,8 @@ const Radionet = module.exports = {
         };
         return queryApi('menu/valuesofcategory', params);
     },
+
+    getCategory: (category) => queryApi('menu/valuesofcategory', {category: '_' + category}),
 
     /**
      * 
@@ -218,8 +231,13 @@ const Radionet = module.exports = {
     },
 
     /**
+     * @deprecated use property category_types
      * @returns {array}
      */
-    getCategoryTypes: () => CATEGORY_TYPES
+    getCategoryTypes: () => CATEGORY_TYPES,
+
+    get category_types() {
+        return CATEGORY_TYPES.slice(0)
+    }
 
 };
