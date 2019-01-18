@@ -45,7 +45,7 @@ const sendStationList = (ws, key, options) => {
     switch (type)
     {
         case "top":
-            Radionet.getTopStations()
+            Radionet.searchStations({category: 'top'})
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
@@ -65,13 +65,13 @@ const sendStationList = (ws, key, options) => {
             break;
 
         case "search":
-            Radionet.searchStationByString(query, offset, limit)
+            Radionet.searchStation({query, offset, limit})
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
         
         case "category":
-            Radionet.searchStationByCategory(category, query, offset, limit)
+            Radionet.searchStation({category, query, offset, limit})
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break

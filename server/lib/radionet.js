@@ -117,7 +117,8 @@ const Radionet = module.exports = {
      * 
      * @param {object} options
      */
-    init (options) {
+    init (options) 
+    {
         //radionet_options = options;
         let {language} = options;
         if (language) {
@@ -131,8 +132,9 @@ const Radionet = module.exports = {
      * 
      * @returns {promise}
      */
-    getTopStations () {
-        return Radionet.searchStationByCategory('top');
+    getTopStations () 
+    {
+        return this.searchStations({category: 'top'});
     },
 
     /**
@@ -141,7 +143,8 @@ const Radionet = module.exports = {
      * @param {int} limit
      * @returns {promise}
      */
-    getLocalStations (limit=50) {
+    getLocalStations (limit=50) 
+    {
         return queryApi('account/getmostwantedbroadcastlists', {sizeoflists: limit})
             .then((data) => data.localBroadcasts);
     },
@@ -152,7 +155,8 @@ const Radionet = module.exports = {
      * @param {int} id
      * @returns {promise}
      */
-    getStationById (id) {
+    getStationById (id) 
+    {
         return this.getStation(id)
     },
 
@@ -162,11 +166,13 @@ const Radionet = module.exports = {
      * @param {int} id
      * @returns {promise}
      */
-    getStationPlaylist (id) {
+    getStationPlaylist (id) 
+    {
         return this.getStation(id, 'playlist')
     },
 
-    getStation: (id, section) => {
+    getStation (id, section)
+    {
         let params = {broadcast: id}
         if (section === 'playlist') {
             return queryApi('playlist/resolveplaylist', params);
@@ -178,6 +184,35 @@ const Radionet = module.exports = {
     },
 
     /**
+     * search stations by string od category
+     * 
+     * @param {object} params {category: {string}, query: <string>, offset: <integer>, limit: <integer>}
+     */
+    searchStations (params) 
+    {
+        let param = {
+            start: params.offset||0,
+            rows: params.limit||100
+        }
+        let route
+
+        if (params.category) {
+            route = 'menu/broadcastsofcategory'
+            param.category = '_' + params.category
+            if (params.query) {
+                param.value = params.query
+            }
+        }
+        else if (params.query) {
+            route = 'index/searchembeddedbroadcast'
+            param.q = params.query
+            param.streamcontentformats = 'aac,mp3'
+        }
+
+        return queryApi(route, param)
+    },
+
+    /**
      * search stations
      * 
      * @param {string} query
@@ -185,14 +220,9 @@ const Radionet = module.exports = {
      * @param {int} limit
      * @returns {promise}
      */
-    searchStationByString (query, offset=0, limit=100) {
-        let params = {
-            q: query,
-            start: offset,
-            rows: limit,
-            streamcontentformats: "aac,mp3"
-        };
-        return queryApi('index/searchembeddedbroadcast', params)
+    searchStationByString (query, offset=0, limit=100) 
+    {
+        return  this.searchStations({query, offset, limit})
     },
 
     /**
@@ -202,14 +232,14 @@ const Radionet = module.exports = {
      * @param {string} category
      * @returns {promise}
      */
-    getCategories (category) {
-        let params = {
-            category: '_' + category
-        };
-        return queryApi('menu/valuesofcategory', params);
+    getCategories (category) 
+    {
+        return this.getCategory(category)
     },
 
-    getCategory: (category) => queryApi('menu/valuesofcategory', {category: '_' + category}),
+    getCategory (category) {
+        return queryApi('menu/valuesofcategory', {category: '_' + category})
+    },
 
     /**
      * 
@@ -220,21 +250,10 @@ const Radionet = module.exports = {
      * 
      * @returns {promise}
      */
-    searchStationByCategory (category, query, offset=0, limit=100) {
-        let params = {
-            category: '_' + category,
-            value: query,
-            start: offset,
-            rows: limit
-        };
-        return queryApi('menu/broadcastsofcategory', params);
+    searchStationByCategory (category, query, offset=0, limit=100) 
+    {
+        return this.searchStations({category, query, offset, limit})
     },
-
-    /**
-     * @deprecated use property category_types
-     * @returns {array}
-     */
-    getCategoryTypes: () => CATEGORY_TYPES,
 
     get category_types() {
         return CATEGORY_TYPES.slice(0)
