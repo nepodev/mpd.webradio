@@ -65,13 +65,13 @@ const sendStationList = (ws, key, options) => {
             break;
 
         case "search":
-            Radionet.searchStation({query, offset, limit})
+            Radionet.searchStations({query, offset, limit})
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
         
         case "category":
-            Radionet.searchStation({category, query, offset, limit})
+            Radionet.searchStations({category, query, offset, limit})
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break
@@ -104,7 +104,7 @@ function onSocketMessage(message) {
 
         case "CATEGORY_LIST": {
             let { category } = options || {};
-            Radionet.getCategories(category)
+            Radionet.getCategory(category)
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
@@ -120,7 +120,7 @@ function onSocketMessage(message) {
             }
             
             if (id) {
-                Radionet.getStationById(id)
+                Radionet.getStation(id)
                     .then(data => {
                         if (data && data.id) {
                             data._favorite = (Store.getFavorites().filter(item => item.id == data.id).shift() ? true : false)
@@ -151,7 +151,7 @@ function onSocketMessage(message) {
                 //sendMessage(ws, {key, options, data: Store.getFavorites()})
             }
             else {
-                Radionet.getStationById(options.id)
+                Radionet.getStation(options.id)
                 .then(station => {
                     Mpc.play([station.streamURL])
                     Store.addRecent(station);
@@ -173,7 +173,7 @@ function onSocketMessage(message) {
                 sendMessage(ws, {key, options, data: Store.getFavorites()})
             }
             else {
-                Radionet.getStationById(options.id)
+                Radionet.getStation(options.id)
                     .then(station => {
                         Store.addFavorite(station);
                         sendMessage(ws, {key, options, data: Store.getFavorites()})
