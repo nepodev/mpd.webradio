@@ -69,9 +69,9 @@ root@pi:~# systemctl status mpd.webradio
 Point your Browser to IP of your Pi and Port `4711`.
 i. e.: `http://192.168.1.5:4711`
 
-## Customizing
+## Configurtion
 
-For customizing create a `config.json` under `/opt/mpd-webradio/var`.
+For customizing create a `config.json` at `/opt/mpd-webradio/var`.
 
 * `server` Interface and Port to serve the Website.
 * `mpd` Host and Port used by MPD Server
