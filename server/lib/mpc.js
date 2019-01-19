@@ -178,15 +178,15 @@ const MpdClient = module.exports = {
     },
 
     playpause() {
-        MpdClient.command('playpause');
+        this.command('playpause');
     },
 
     play(params) {
-        MpdClient.command('play', params);
+        this.command('play', params);
     },
     
     setVolume (direction) {
-        MpdClient.command('volume', [direction]);
+        this.command('volume', [direction]);
     },
 
     mpdState

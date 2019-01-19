@@ -148,7 +148,6 @@ function onSocketMessage(message) {
             if (station) {
                 Mpc.play([station.streamURL])
                 Store.addRecent(station);
-                //sendMessage(ws, {key, options, data: Store.getFavorites()})
             }
             else {
                 Radionet.getStation(options.id)
