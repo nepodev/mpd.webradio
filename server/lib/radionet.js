@@ -127,20 +127,9 @@ const Radionet = module.exports = {
     },
 
     /**
-     * get the top stations
-     * shorthand for radionet.getStationByCategory('top', ...)
-     * 
-     * @returns {promise}
-     */
-    getTopStations () 
-    {
-        return this.searchStations({category: 'top'});
-    },
-
-    /**
      * get local stations
      * 
-     * @param {int} limit
+     * @param {integer} limit
      * @returns {promise}
      */
     getLocalStations (limit=50) 
@@ -150,27 +139,11 @@ const Radionet = module.exports = {
     },
 
     /**
-     * get station details 
+     * get station details
      * 
-     * @param {int} id
-     * @returns {promise}
+     * @param {integer} id 
+     * @param {string} section 
      */
-    getStationById (id) 
-    {
-        return this.getStation(id)
-    },
-
-    /**
-     * get stations playlist
-     * 
-     * @param {int} id
-     * @returns {promise}
-     */
-    getStationPlaylist (id) 
-    {
-        return this.getStation(id, 'playlist')
-    },
-
     getStation (id, section)
     {
         let params = {broadcast: id}
@@ -184,7 +157,7 @@ const Radionet = module.exports = {
     },
 
     /**
-     * search stations by string od category
+     * search stations
      * 
      * @param {object} params {category: {string}, query: <string>, offset: <integer>, limit: <integer>}
      */
@@ -213,48 +186,17 @@ const Radionet = module.exports = {
     },
 
     /**
-     * search stations
+     * get list of category
      * 
-     * @param {string} query
-     * @param {int} offset
-     * @param {int} limit
-     * @returns {promise}
+     * @param {string} category 
      */
-    searchStationByString (query, offset=0, limit=100) 
-    {
-        return  this.searchStations({query, offset, limit})
-    },
-
-    /**
-     * get values of category.
-     * 
-     * @deprecated use getCategory(<category>)
-     * @param {string} category
-     * @returns {promise}
-     */
-    getCategories (category) 
-    {
-        return this.getCategory(category)
-    },
-
     getCategory (category) {
         return queryApi('menu/valuesofcategory', {category: '_' + category})
     },
 
     /**
-     * 
-     * @param {string} category
-     * @param {string} query
-     * @param {int} offset
-     * @param {int} limit
-     * 
-     * @returns {promise}
+     * @var {array}
      */
-    searchStationByCategory (category, query, offset=0, limit=100) 
-    {
-        return this.searchStations({category, query, offset, limit})
-    },
-
     get category_types() {
         return CATEGORY_TYPES.slice(0)
     }
