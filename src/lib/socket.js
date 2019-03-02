@@ -14,9 +14,10 @@ const connect = () => {
         socket.close(1000, 'Someone called connect again', {keepClosed: false})
         return
     }
-    var url = 'ws://' + location.hostname + (location.port ? ':' + location.port : '');
-    // add path
-    url += (location.pathname.substr(-5) === '.html') ? location.pathname.match(/.*\//)[0] : location.pathname;
+    var lo = window.location,
+        url = (lo.protocol === 'https:' ? 'wss://' : 'ws://');
+    url += lo.hostname + (lo.port ? ':' + lo.port : '');
+    url += (lo.pathname.substr(-5) === '.html') ? lo.pathname.match(/.*\//)[0] : lo.pathname;
     
     socket =  new ReconnectingWebSocket(url);
     socket.onopen = () => {

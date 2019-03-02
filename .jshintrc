@@ -2,5 +2,8 @@
     "asi": true,
     "esversion": 6,
     "node": true,
-    "validthis": true
+    "validthis": true,
+    "globals": {
+        "window": true
+    }
 }
