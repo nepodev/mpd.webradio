@@ -29,7 +29,7 @@
     "babel-loader": "^7.1.5",
     "babel-minify-webpack-plugin": "^0.3.0",
     "babel-preset-es2015-riot": "^1.1.0",
-    "css-loader": "^0.28.10",
+    "css-loader": "^2.1.1",
     "file-loader": "^1.1.11",
     "mdi": "^2.2.43",
     "nodemon": "^1.18.9",
