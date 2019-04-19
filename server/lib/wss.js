@@ -166,19 +166,12 @@ function onSocketMessage(message) {
             break;
 
         case "FAV_ADD": {
-            let station = Store.searchStation('id', options.id);
-            if (station) {
-                Store.addFavorite(station);
-                sendMessage(ws, {key, options, data: Store.getFavorites()})
-            }
-            else {
-                Radionet.getStation(options.id)
-                    .then(station => {
-                        Store.addFavorite(station);
-                        sendMessage(ws, {key, options, data: Store.getFavorites()})
-                    })
-                    .catch(error => sendMessage(ws, {key, options, error}));
-            }
+            Radionet.getStation(options.id)
+                .then(station => {
+                    Store.addFavorite(station);
+                    sendMessage(ws, {key, options, data: Store.getFavorites()})
+                })
+                .catch(error => sendMessage(ws, {key, options, error}));
             break;
         }
 
