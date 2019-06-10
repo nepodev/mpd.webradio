@@ -8,7 +8,7 @@
 "use strict";
 
 const Http = require("http");
-const QueryString = require('query-string');
+const querystring = require('querystring');
 
 const MAIN_DOMAINS = {
     english: 'rad.io',
@@ -52,7 +52,7 @@ var request_options = {
  */
 const queryApi = (route, params) => {
     let options = Object.assign({}, request_options, {path: BASE_PATH + route}),
-        queryString = QueryString.stringify(params||{})
+        queryString = querystring.stringify(params||{})
     
     if (queryString) {
         options.path += '?' + queryString
