@@ -135,6 +135,10 @@ function onSocketMessage(message) {
             break
         }
 
+        case 'RADIO_PLAYSTOP':
+            Mpc.playstop()
+            break
+
         case "RADIO_PLAYPAUSE":
             Mpc.playpause()
             break

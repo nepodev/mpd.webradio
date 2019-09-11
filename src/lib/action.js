@@ -98,6 +98,11 @@ const self = module.exports = {
         socket.sendMessage({key: 'RADIO_PLAYPAUSE'})
     },
 
+    onPlayStop: event => {
+        event.preventDefault()
+        socket.sendMessage({key: 'RADIO_PLAYSTOP'})
+    },
+
     onImageError: event => {
         event.currentTarget.src = noImage
     }

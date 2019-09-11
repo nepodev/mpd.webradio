@@ -106,6 +106,23 @@ function doCommand(command, params=[]) {
         ]);
         return;
     }
+    else if (command == 'playstop') {
+        let {state} = mpdState.status;
+        switch(state)
+        {
+            case 'pause':
+                command = 'pause'
+                params = [0];
+                break;
+            case 'play':
+                command = 'stop';
+                params = [];
+                break;
+            default:
+                command = 'play';
+                params = [];
+        }
+    }
     else if (command == 'playpause') {
         let {state} = mpdState.status;
         if (state === 'pause') {
@@ -175,6 +192,10 @@ const MpdClient = module.exports = {
             commandQueue.push({command, options});
             connect();
         }
+    },
+
+    playstop() {
+        this.command('playstop');
     },
 
     playpause() {
