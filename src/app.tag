@@ -24,7 +24,7 @@
                     </div>
                     <div class="phone-6 tablet-4 column radio-control">
                         <div class="pull-right">
-                            <button onclick="{action.onPlayPause}" class="btn icon mdi {radio.state == 'play' ? 'mdi-pause' : 'mdi-play'}"></button>
+                            <button onclick="{action.onPlayStop}" class="btn icon mdi {radio.state == 'play' ? 'mdi-stop' : 'mdi-play'}"></button>
                             <button onclick="{action.onSetVolume}" data-volume-set="down" class="btn icon icon mdi mdi-volume-medium"></button>
                             <button onclick="{action.onSetVolume}" data-volume-set="up" class="btn icon mdi mdi-volume-high"></button>
                         </div>
