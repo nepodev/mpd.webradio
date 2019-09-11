@@ -1,6 +1,6 @@
 {
   "name": "mpd.webradio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Webclient / -server to listen Webradio via MPD",
   "main": "index.js",
   "repository": {
