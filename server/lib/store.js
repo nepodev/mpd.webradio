@@ -149,7 +149,7 @@ function addToList(list, data, max=0) {
 }
 
 function reduceStationKeys(station) {
-    if (station['_mpdradio']) {
+    if (station._mpdradio) {
         return station;
     }
     let item = {}
@@ -160,7 +160,7 @@ function reduceStationKeys(station) {
             (item.topics ? item.topics : [])
         ).join(', ')
     
-    item['_mpdradio'] = 1;
+    item._mpdradio = 1;
     return item;
 }
 
