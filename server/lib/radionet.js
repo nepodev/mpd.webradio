@@ -33,6 +33,8 @@ const PLAYLIST_SUFFIX = [
     '.m3u'
 ]
 
+const THUMB_KEYS = ['logo300x300', 'logo175x175', 'logo100x100', 'logo44x44']
+
 const BASE_PATH = '/info/'
 
 const SORT_TYPES = [
@@ -62,7 +64,7 @@ const queryApi = (route, params) => {
     if (queryString) {
         options.path += '?' + queryString
     }
-
+    console.log(options)
     // return new pending promise
     return new Promise((resolve, reject) => {
         const request = Http.get(options, (response) => {
@@ -116,11 +118,13 @@ const getStationStreamURL = station => {
     return station;
 };
 
-const formatStationV2 = list => {
+const mapStationListV2 = list => {
     let stations = []
-    list.foreach(station => {
-        let s = {}
-        ['logo300x300', 'logo175x175', 'logo100x100', 'logo44x44'].some(key => {
+    list.forEach(station => {
+        let s = {
+            _orig: station
+        }
+        THUMB_KEYS.some(key => {
             if (station[key]) {
                 s.thumbnail = station[key]
                 return true
@@ -128,12 +132,11 @@ const formatStationV2 = list => {
         })
 
         if (typeof station.genres[0] === 'object') {
-            s.genre = station.genres.map(g => g.value)
+            s.genres = station.genres.map(g => g.value)
         }
         else {
-            s.genre = station.genres
+            s.genres = station.genres
         }
-        s.genre = s.genre.join(',')
         
         try {
             s.description = station.descripton.value || ''
@@ -148,10 +151,11 @@ const formatStationV2 = list => {
         catch(e) {
             s.name = station.name
         }
-        
 
-
+        stations.push(s)
     })
+
+    return stations
 }
 
 const mapSystemName = list => list.map(o => o.systemEnglish)
@@ -215,6 +219,14 @@ const Radionet = module.exports = {
         let route
 
         if (params.category) {
+            switch (params.category)
+            {
+                case 'genre':
+                    return this.getStationsByGenre(params.query, params.offset, params.limit)
+                case 'language':
+                    return this.getStationsByLanguage(params.query, params.offset, params.limit) 
+            }
+            return this.getStationsByGenre(params.query, params.offset, params.limit)
             route = 'menu/broadcastsofcategory'
             param.category = '_' + params.category
             if (params.query) {
@@ -294,12 +306,18 @@ const Radionet = module.exports = {
      * @param {integer} sizeperpage 
      * @param {integer} pageindex 
      */
-    getStationsByGenre(genre, sorttype='STATION_NAME', sizeperpage=50, pageindex=0)
+    getStationsByGenre(genre, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
     {
         let route = 'v2/search/stationsbygenre'
         let params = { genre, sorttype, sizeperpage, pageindex }
 
         return queryApi(route, params)
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getStationsByLanguage(language, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    {
+
     },
 
     getRecommendationStations()
