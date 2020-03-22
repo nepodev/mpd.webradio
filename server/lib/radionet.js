@@ -104,55 +104,56 @@ const queryApi = (route, params) => {
 /**
  * if streamURL is a playlist we extract a usabel url from streamUrls and replace streamURL
  * 
+ * @deprecated
  * @param {object} station 
  * @returns {object}
  */
 const getStationStreamURL = station => {
-    let suffix = station.streamURL.substr(-4);
-    if (PLAYLIST_SUFFIX.indexOf(suffix) !== -1 && station.streamUrls) {
-        let arr = station.streamUrls.filter(item => PLAYLIST_SUFFIX.indexOf(item.streamUrl.substr(-4)) === -1).shift()
-        if (arr) {
-            station.streamURL = arr.streamUrl
-        }
+    if (Array.isArray(station.streamUrls)) {
+        station.streamURL = station.streamUrls[0]
     }
-    return station;
-};
+    return station
+}
+const extractStreamUrl = station => {
+    let streams = station.streamUrls||[]
 
+    return streams[0] ? streams[0].streamUrl : ''
+}
+const mapStation = station => {
+    let s = {
+        _orig: station,
+        id: station.id,
+        streamURL: extractStreamUrl(station),
+        description: station.description,
+        shortDescription: station.shortDescription||''
+    }
+
+    THUMB_KEYS.some(key => {
+        if (station[key]) {
+            s.thumbnail = station[key]
+            return true
+        }
+    })
+    if (typeof station.genres[0] === 'object') {
+        s.genres = station.genres.map(g => g.value)
+    }
+    else {
+        s.genres = station.genres
+    }
+
+    try {
+        s.name = station.name.value || ''
+    }
+    catch(e) {
+        s.name = station.name
+    }
+    return s
+}
 const mapStationListV2 = list => {
     let stations = []
+
     list.forEach(station => {
-        let s = {
-            _orig: station
-        }
-        THUMB_KEYS.some(key => {
-            if (station[key]) {
-                s.thumbnail = station[key]
-                return true
-            }
-        })
-
-        if (typeof station.genres[0] === 'object') {
-            s.genres = station.genres.map(g => g.value)
-        }
-        else {
-            s.genres = station.genres
-        }
-        
-        try {
-            s.description = station.descripton.value || ''
-        }
-        catch (e) {
-            s.description = station.descripton
-        }
-
-        try {
-            s.name = station.name.value || ''
-        }
-        catch(e) {
-            s.name = station.name
-        }
-
-        stations.push(s)
+        stations.push(mapStation(station))
     })
 
     return stations
@@ -181,28 +182,23 @@ const Radionet = module.exports = {
      * @param {integer} limit
      * @returns {promise}
      */
-    getLocalStations (limit=50) 
+    getLocalStations (pageindex=0, sizeperpage=50)
     {
-        return queryApi('account/getmostwantedbroadcastlists', {sizeoflists: limit})
-            .then((data) => data.localBroadcasts);
+        return queryApi('v2/search/localstations', {pageindex, sizeperpage})
+            .then(mapStationListV2(data.categories[0].matches||[]))
     },
 
     /**
      * get station details
      * 
-     * @param {integer} id 
-     * @param {string} section 
+     * @param {integer} station_id
+     * @param {string} section deprecated 
      */
-    getStation (id, section)
+    getStation (station_id)
     {
-        let params = {broadcast: id}
-        if (section === 'playlist') {
-            return queryApi('playlist/resolveplaylist', params);
-        }
-        else {
-            return queryApi('broadcast/getbroadcastembedded', params)
-                .then(data => getStationStreamURL(data))
-        }
+        let route = 'v2/search/station'
+        let params = {station: station_id}
+
     },
 
     /**
@@ -210,36 +206,35 @@ const Radionet = module.exports = {
      * 
      * @param {object} params {category: {string}, query: <string>, offset: <integer>, limit: <integer>}
      */
-    searchStations (params) 
+    searchStations (params)
     {
-        let param = {
-            start: params.offset||0,
-            rows: params.limit||100
-        }
-        let route
+        let pageindex = params.offset||0
+        let sizeperpage = params.limit||50
 
         if (params.category) {
             switch (params.category)
             {
                 case 'genre':
-                    return this.getStationsByGenre(params.query, params.offset, params.limit)
+                    return this.getStationsByGenre(params.query, pageindex, sizeperpage)
+                case 'topic':
+                    return this.getStationsByTopic(params.query, pageindex, sizeperpage)
                 case 'language':
-                    return this.getStationsByLanguage(params.query, params.offset, params.limit) 
-            }
-            return this.getStationsByGenre(params.query, params.offset, params.limit)
-            route = 'menu/broadcastsofcategory'
-            param.category = '_' + params.category
-            if (params.query) {
-                param.value = params.query
+                    return this.getStationsByLanguage(params.query, pageindex, sizeperpage)
+                case 'country':
+                    return this.getStationsByCountry(params.query, pageindex, sizeperpage)
+                case 'city':
+                    return this.getStationsByCity(params.query, pageindex, sizeperpage)
             }
         }
         else if (params.query) {
-            route = 'index/searchembeddedbroadcast'
-            param.q = params.query
-            param.streamcontentformats = 'aac,mp3'
+            return this.searchStationsByString(params.query, pageindex, sizeperpage)
         }
+    },
 
-        return queryApi(route, param)
+    searchStationsByString(query, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    {
+        return queryApi('v2/search/stations', { query, pageindex, sizeperpage, sorttype})
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
     },
 
     /**
@@ -267,7 +262,7 @@ const Radionet = module.exports = {
         return queryApi('v2/search/getgenres')
     },
 
-    getGenres ()
+    getGenres()
     {
         return queryApi('v2/search/getgenres').then(mapSystemName)
     },
@@ -290,13 +285,12 @@ const Radionet = module.exports = {
     getCities(country=null)
     {
         let route = 'v2/search/getcities'
+        let params = {}
         if (country) {
-            let params = { country }
-            return queryApi(route, params).then(mapSystemName)
+            params = { country }
         }
-        else  {
-            return queryApi(route).then(mapSystemName)
-        }
+
+        return queryApi(route, params).then(mapSystemName)
     },
 
     /**
@@ -308,8 +302,18 @@ const Radionet = module.exports = {
      */
     getStationsByGenre(genre, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
     {
-        let route = 'v2/search/stationsbygenre'
-        let params = { genre, sorttype, sizeperpage, pageindex }
+
+        return queryApi(
+                'v2/search/stationsbygenre',
+                { genre, sorttype, sizeperpage, pageindex }
+            )
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getStationsByTopic(topic, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    {
+        let route = 'v2/search/stationsbytopic'
+        let params = { topic, sorttype, sizeperpage, pageindex }
 
         return queryApi(route, params)
             .then(data => mapStationListV2(data.categories[0].matches||[]))
@@ -317,12 +321,46 @@ const Radionet = module.exports = {
 
     getStationsByLanguage(language, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
     {
+        let route = 'v2/search/stationsbylanguage'
+        let params = { language, sorttype, sizeperpage, pageindex }
 
+        return queryApi(route, params)
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getStationsByCountry(country, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    {
+        let route = 'v2/search/stationsbycountry'
+        let params = { country, sorttype, sizeperpage, pageindex }
+
+        return queryApi(route, params)
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getStationsByCity(city, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    {
+        let route = 'v2/search/stationsbycity'
+        let params = { city, sorttype, sizeperpage, pageindex }
+
+        return queryApi(route, params)
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getStationsNearby(pageindex=0, sizeperpage=50)
+    {
+        return queryApi('v2/search/localstations', {pageindex, sizeperpage})
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
+    },
+
+    getTopStations(pageindex=0, sizeperpage=50)
+    {
+        return queryApi('v2/search/topstations', { pageindex, sizeperpage })
+            .then(data => mapStationListV2(data.categories[0].matches||[]))
     },
 
     getRecommendationStations()
     {
-
+        return queryApi('v2/search/editorstips').then(data => mapStationListV2(data))
     },
 
     /**
