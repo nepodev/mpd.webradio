@@ -9,9 +9,9 @@ const start = async () => {
     // let res = await Rd.getGenres()
     // console.log(res)
 
-    //res = await Rd.getStationsByGenre('Ska')
+    res = await Rd.getStationsByGenre('Ska')
     //res = await Rd.getStation(14277)
-    res = await Rd.searchStationsByString('ska')
+    //res = await Rd.searchStationsByString('ska')
     console.log(res, '----')
     // let station = res.categories[0].matches[5]
     // let thumbnail
