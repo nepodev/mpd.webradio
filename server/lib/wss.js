@@ -45,7 +45,7 @@ const sendStationList = (ws, key, options) => {
     switch (type)
     {
         case "top":
-            Radionet.searchStations({category: 'top'})
+            Radionet.getTopStations()
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
@@ -80,13 +80,6 @@ const sendStationList = (ws, key, options) => {
     }
 }
 
-const extendStationInfo = station => {
-    let mpdradio = {
-        favorite: (Store.getFavorites().filter(item => item.id == station.id).shift() ? true : false),
-        selected: (mpdState.status.file == station.streamURL)
-    }
-    return Object.assign(station, {mpdradio})
-}
 
 /**
  * 

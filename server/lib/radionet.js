@@ -64,7 +64,7 @@ const queryApi = (route, params) => {
     if (queryString) {
         options.path += '?' + queryString
     }
-    console.log(options)
+
     // return new pending promise
     return new Promise((resolve, reject) => {
         const request = Http.get(options, (response) => {
@@ -189,10 +189,10 @@ const Radionet = module.exports = {
      * @param {integer} limit
      * @returns {promise}
      */
-    getLocalStations (pageindex=0, sizeperpage=50)
+    getLocalStations (pageindex=1, sizeperpage=50)
     {
         return queryApi('v2/search/localstations', {pageindex, sizeperpage})
-            .then(mapStationListV2(data.categories[0].matches||[]))
+            .then(mapSearchResult)
     },
 
     /**
@@ -238,9 +238,9 @@ const Radionet = module.exports = {
         }
     },
 
-    searchStationsByString(query, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    searchStationsByString(query, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
-        return queryApi('v2/search/stations', { query, pageindex, sizeperpage, sorttype})
+        return queryApi('v2/search/stations', { query, pageindex, sizeperpage, sorttype })
             .then(mapSearchResult)
     },
 
@@ -307,7 +307,7 @@ const Radionet = module.exports = {
      * @param {integer} sizeperpage 
      * @param {integer} pageindex 
      */
-    getStationsByGenre(genre, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    getStationsByGenre(genre, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
 
         return queryApi(
@@ -317,7 +317,7 @@ const Radionet = module.exports = {
             .then(mapSearchResult)
     },
 
-    getStationsByTopic(topic, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    getStationsByTopic(topic, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
         let route = 'v2/search/stationsbytopic'
         let params = { topic, sorttype, sizeperpage, pageindex }
@@ -325,7 +325,7 @@ const Radionet = module.exports = {
         return queryApi(route, params).then(mapSearchResult)
     },
 
-    getStationsByLanguage(language, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    getStationsByLanguage(language, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
         let route = 'v2/search/stationsbylanguage'
         let params = { language, sorttype, sizeperpage, pageindex }
@@ -333,7 +333,7 @@ const Radionet = module.exports = {
         return queryApi(route, params).then(mapSearchResult)
     },
 
-    getStationsByCountry(country, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    getStationsByCountry(country, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
         let route = 'v2/search/stationsbycountry'
         let params = { country, sorttype, sizeperpage, pageindex }
@@ -341,7 +341,7 @@ const Radionet = module.exports = {
         return queryApi(route, params).then(mapSearchResult)
     },
 
-    getStationsByCity(city, pageindex=0, sizeperpage=50, sorttype='STATION_NAME')
+    getStationsByCity(city, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
         let route = 'v2/search/stationsbycity'
         let params = { city, sorttype, sizeperpage, pageindex }
@@ -349,12 +349,12 @@ const Radionet = module.exports = {
         return queryApi(route, params).then(mapSearchResult)
     },
 
-    getStationsNearby(pageindex=0, sizeperpage=50)
+    getStationsNearby(pageindex=1, sizeperpage=50)
     {
         return queryApi('v2/search/localstations', {pageindex, sizeperpage}).then(mapSearchResult)
     },
 
-    getTopStations(pageindex=0, sizeperpage=50)
+    getTopStations(pageindex=1, sizeperpage=50)
     {
         return queryApi('v2/search/topstations', { pageindex, sizeperpage }).then(mapSearchResult)
     },
