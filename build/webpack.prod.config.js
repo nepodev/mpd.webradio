@@ -8,8 +8,9 @@ module.exports = {
     publicPath: 'assets/',
     filename: 'bundle.js'
   },
+  mode: 'production',
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tag$/,
         exclude: /node_modules/,

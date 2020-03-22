@@ -16,6 +16,7 @@ const LISTNAMES = [
 const STATION_KEYS = [
     "id",
     "streamURL",
+    "thumbnail",
     "bitrate",
     "broadcastType",
     "country",

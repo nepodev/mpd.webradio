@@ -14,7 +14,7 @@ this.onSearchStation = event => {
             type: "category",
             category: elem.dataset.category,
             query: elem.dataset.query,
-            offset: 0,
+            offset: 1,
             limit: 50
         }
     this.parent.action.openIndicator()

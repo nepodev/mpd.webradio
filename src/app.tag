@@ -109,19 +109,21 @@ const onMessage = function(message) {
             
         case 'STATION_LIST':
             this.visibleList = 'stationlist'
-            let nextOffset = null
-            if (options.limit && data.length == options.limit) {
-                nextOffset = options.offset + options.limit
-            }
+            let result = Array.isArray(data) ? data: data.result
 
-            if (options.offset && options.offset > 0) {
-                // get the next page
-                data = this.stationList.data.concat(data)
+            let nextOffset = null
+            if (options.limit && result.length == options.limit) {
+                nextOffset = options.offset + 1 //options.limit
+            }
+            
+            if (options.offset && options.offset > 1) {
+                // append list
+                result = this.stationList.data.concat(result)
             }
             else {
                 document.querySelector('stationlist').parentNode.scrollTop = 0
             }
-            this.stationList = {data, options, nextOffset}
+            this.stationList = {data: result, options, nextOffset}
 
             if (options.type != 'search') {
                 this.refs.query.value=''
@@ -203,7 +205,7 @@ this.onSubmitSearch = event => {
     let options = {
         type: "search",
         query: this.refs.query.value,
-        offset: 0,
+        offset: 1,
         limit: 50
     }
     this.action.openIndicator()
@@ -212,6 +214,9 @@ this.onSubmitSearch = event => {
 
 
 this.getStationImageUrl = station => {
+    if (station.thumbnail) {
+        return station.thumbnail
+    }
     let thumb = ''
     if (station.picture4TransName) {
         thumb = station.picture4TransName

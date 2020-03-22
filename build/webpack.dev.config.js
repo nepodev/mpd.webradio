@@ -8,8 +8,9 @@ module.exports = {
     filename: 'bundle.js'
   },
   watch: true,
+  mode: 'development',
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tag$/,
         exclude: /node_modules/,

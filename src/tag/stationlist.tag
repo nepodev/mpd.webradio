@@ -1,6 +1,6 @@
 <stationlist>
     <ul class="list station-list">
-        <li each={opts.stationList.data} class="station-row {playable.toLowerCase()}">
+        <li each={opts.stationList.data} class="station-row">
             <span class="pull-right">
                 <button class="btn icon mdi mdi-play with-circle" onclick="{action.onPlayStation}" data-station-id="{id}"></button>
             </span>
@@ -9,7 +9,7 @@
             </span>
             <div class="station-info" onclick="{action.onGetStationDetails}" data-station-id="{id}">
                 <span class="title">{name}</span>
-                <span class="subline">{genresAndTopics}</span>
+                <span class="subline">{genres.join(',')}</span>
             </div>
         </li>
     </ul>
