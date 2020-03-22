@@ -134,6 +134,7 @@ const mapStation = station => {
             return true
         }
     })
+    
     if (typeof station.genres[0] === 'object') {
         s.genres = station.genres.map(g => g.value)
     }
@@ -141,12 +142,8 @@ const mapStation = station => {
         s.genres = station.genres
     }
 
-    try {
-        s.name = station.name.value || ''
-    }
-    catch(e) {
-        s.name = station.name
-    }
+    s.name = station.name.value ? station.name.value : station.name
+
     return s
 }
 const mapStationListV2 = list => {
