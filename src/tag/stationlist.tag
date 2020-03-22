@@ -9,7 +9,7 @@
             </span>
             <div class="station-info" onclick="{action.onGetStationDetails}" data-station-id="{id}">
                 <span class="title">{name}</span>
-                <span class="subline">{genresAndTopics}</span>
+                <span class="subline">{genres.join(',')}</span>
             </div>
         </li>
     </ul>
