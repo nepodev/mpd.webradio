@@ -212,6 +212,9 @@ this.onSubmitSearch = event => {
 
 
 this.getStationImageUrl = station => {
+    if (station.thumbnail) {
+        return station.thumbnail
+    }
     let thumb = ''
     if (station.picture4TransName) {
         thumb = station.picture4TransName
