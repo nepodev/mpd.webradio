@@ -9,7 +9,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tag$/,
         exclude: /node_modules/,
