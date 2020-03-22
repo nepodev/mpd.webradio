@@ -8,6 +8,7 @@ module.exports = {
     publicPath: 'assets/',
     filename: 'bundle.js'
   },
+  mode: 'production',
   module: {
     rules: [
       {
