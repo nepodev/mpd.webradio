@@ -18,10 +18,10 @@
   "author": "nepodev",
   "license": "MIT",
   "dependencies": {
+    "data-store": "^4.0.3",
     "express": "^4.17.1",
     "graceful-fs": "^4.2.0",
     "mpd": "^1.3.0",
-    "node-store": "0.0.1",
     "ws": "^4.0.0"
   },
   "devDependencies": {
