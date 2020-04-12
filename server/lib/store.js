@@ -95,7 +95,7 @@ class myStore {
 
     getList(listname)
     {
-        this._store.hasOwn(listname) ? this._store.get(listname) : []
+        return this._store.hasOwn(listname) ? this._store.get(listname) : []
     }
 
     searchStation(key, value) {
