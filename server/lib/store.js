@@ -24,7 +24,7 @@ class myStore {
     constructor(options)
     {
         this._settings = Object.assign(DEFAULT_CONFIG, options)
-        this._store = new Store({path: this.settings.file})
+        this._store = new Store({path: this._settings.file})
         LISTNAMES.forEach(ln => {
             let name = 'max_' + ln
             this[name] = this._settings[name]||0
@@ -96,6 +96,11 @@ class myStore {
     getList(listname)
     {
         return this._store.hasOwn(listname) ? this._store.get(listname) : []
+    }
+
+    getStation(id)
+    {
+        this.searchStation('id', id)
     }
 
     searchStation(key, value) {
