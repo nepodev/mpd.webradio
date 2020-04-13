@@ -25,90 +25,53 @@ class myStore {
     {
         this._settings = Object.assign(DEFAULT_CONFIG, options)
         this._store = new Store({path: this._settings.file})
-        LISTNAMES.forEach(ln => {
-            let name = 'max_' + ln
-            this[name] = this._settings[name]||0
-        })
+
+        LISTNAMES.forEach(listname => 
+            this._store.hasOwn(listname)||this._store.set(listname, [])
+        )
     }
 
     get favorites()
     {
-        return this.getList('favorites')
+        return this._store.get('favorites')
     }
+
     get recent()
     {
-        return this.getList('recent')
+        return this._store.get('recent')
     }
+    
     get cache()
     {
-        return this.getList('cache')
+        return this._store.get('cache')
     }
 
-    addFavorite(station)
+    add(listname, data)
     {
-        this.addStation('favorites', station, this._station)
-    }
+        let list = this[listname].filter(item => item.id != data.id)
+        list.unshift(data)
 
-    removeFavorite(id)
-    {
-        this.removeStation('favorites', id)
-    }
-
-    addRecent(station)
-    {
-        this.addStation(station)
-    }
-
-    removeRecent(id)
-    {
-        this.removeStation('recent', id)
-    }
-
-    addCache(station)
-    {
-        this.addStation('cache',station)
-    }
-
-    addStation(listname, station)
-    {
-        let max = this['max_' + listname]
-        let list = this.getList(listname).filter(item => item.id != station.id);
-        list.unshift(station)
+        let max = this._settings['max_' + listname]
         if (max) {
             list = list.slice(0, max)
         }
         this._store.set(listname, list)
     }
 
-    /**
-     * remove station from list
-     * 
-     * @param {string} listname 
-     * @param {int} id 
-     * @returns {void}
-     */
-    removeStation(listname, id)
+    remove(listname, id)
     {
-        let list = this.getList(listname).filter(item => item.id != id)
+        let list = this[listname].filter(item => item.id != id)
         this._store.set(listname, list)
     }
 
-    getList(listname)
+    search(key, value)
     {
-        return this._store.hasOwn(listname) ? this._store.get(listname) : []
-    }
-
-    getStation(id)
-    {
-        this.searchStation('id', id)
-    }
-
-    searchStation(key, value) {
-        let all = this._store.get(),
-            list = [];
+        let all = this._store.get()
+        let list = []
         Object.keys(all).forEach(name => list = list.concat(all[name]));
         return (list.filter(item => item[key] == value)).shift();
     }
+    
 }
 
 module.exports = myStore

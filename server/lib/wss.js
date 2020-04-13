@@ -108,7 +108,7 @@ function onSocketMessage(message) {
         case "STATION_DETAILS": {
             let {id, url} = options || {};
             if (url) {
-                let station = store.searchStation('streamURL', url);
+                let station = store.search('streamURL', url);
                 if (station) {
                     id = station.id
                 }
@@ -143,18 +143,18 @@ function onSocketMessage(message) {
             break
             
         case "RADIO_PLAY_STATION": {
-            let station = store.searchStation('id', options.id)
+            let station = store.search('id', options.id)
             if (station) {
                 Mpc.play([station.streamURL])
-                store.addRecent(station);
+                store.add('recent', station);
             }
             else {
                 Radionet.getStation(options.id)
-                .then(station => {
-                    Mpc.play([station.streamURL])
-                    store.addStation('recent',station)
-                })
-                .catch(error => sendMessage(ws, {key, options, error}));
+                    .then(station => {
+                        Mpc.play([station.streamURL])
+                        store.add('recent',station)
+                    })
+                    .catch(error => sendMessage(ws, {key, options, error}));
             }
             break;
         }
@@ -167,7 +167,7 @@ function onSocketMessage(message) {
         case "FAV_ADD": {
             Radionet.getStation(options.id)
                 .then(station => {
-                    store.addFavorite(station);
+                    store.add('favorites', station);
                     sendMessage(ws, {key, options, data: store.favorites})
                 })
                 .catch(error => sendMessage(ws, {key, options, error}));
@@ -175,7 +175,7 @@ function onSocketMessage(message) {
         }
 
         case "FAV_REMOVE":
-            store.removeFavorite(options.id);
+            store.remove('favorites', options.id);
             sendMessage(ws, {key, options, data: store.favorites})
             break;
 
