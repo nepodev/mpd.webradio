@@ -10,6 +10,8 @@ const {mpdState} = Mpc;
 
 var Config = null;
 
+var store = null
+
 mpdState.on('change', () => {
     broadcastMessage({
         key: "RADIO_STATUS",
@@ -57,11 +59,11 @@ const sendStationList = (ws, key, options) => {
             break;
 
         case "recent":
-            sendMessage(ws, {key, options, data: Store.getRecent()});
+            sendMessage(ws, {key, options, data: store.recent});
             break;
 
         case "favorite":
-            sendMessage(ws, {key, options, data: Store.getFavorites()});
+            sendMessage(ws, {key, options, data: store.favorites});
             break;
 
         case "search":
@@ -106,7 +108,7 @@ function onSocketMessage(message) {
         case "STATION_DETAILS": {
             let {id, url} = options || {};
             if (url) {
-                let station = Store.searchStation('streamURL', url);
+                let station = store.search('streamURL', url);
                 if (station) {
                     id = station.id
                 }
@@ -116,7 +118,7 @@ function onSocketMessage(message) {
                 Radionet.getStation(id)
                     .then(data => {
                         if (data && data.id) {
-                            data._favorite = (Store.getFavorites().filter(item => item.id == data.id).shift() ? true : false)
+                            data._favorite = (store.favorites.filter(item => item.id == data.id).shift() ? true : false)
                             sendMessage(ws, {key, options, data})
                         }
                     })
@@ -141,18 +143,18 @@ function onSocketMessage(message) {
             break
             
         case "RADIO_PLAY_STATION": {
-            let station = Store.searchStation('id', options.id)
+            let station = store.search('id', options.id)
             if (station) {
                 Mpc.play([station.streamURL])
-                Store.addRecent(station);
+                store.add('recent', station);
             }
             else {
                 Radionet.getStation(options.id)
-                .then(station => {
-                    Mpc.play([station.streamURL])
-                    Store.addRecent(station);
-                })
-                .catch(error => sendMessage(ws, {key, options, error}));
+                    .then(station => {
+                        Mpc.play([station.streamURL])
+                        store.add('recent',station)
+                    })
+                    .catch(error => sendMessage(ws, {key, options, error}));
             }
             break;
         }
@@ -165,16 +167,16 @@ function onSocketMessage(message) {
         case "FAV_ADD": {
             Radionet.getStation(options.id)
                 .then(station => {
-                    Store.addFavorite(station);
-                    sendMessage(ws, {key, options, data: Store.getFavorites()})
+                    store.add('favorites', station);
+                    sendMessage(ws, {key, options, data: store.favorites})
                 })
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
         }
 
         case "FAV_REMOVE":
-            Store.removeFavorite(options.id);
-            sendMessage(ws, {key, options, data: Store.getFavorites()})
+            store.remove('favorites', options.id);
+            sendMessage(ws, {key, options, data: store.favorites})
             break;
 
         case "SYS_CONFIG":
@@ -204,7 +206,9 @@ module.exports = {
         Mpc.init(Config.mpd);
 
         // setup store
-        Store.init(Config.store)
+        //Store.init(Config.store)
+        store = new Store(Config.store)
+        
 
         wss = new WebSocketServer({ server });
 
