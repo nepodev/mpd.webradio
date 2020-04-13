@@ -84,6 +84,10 @@
   .station-details .center {
       text-align: center;
   }
+
+  .station-details img.station-logo {
+      max-height: 200px
+  }
   
 .station-row .station-info .title {
     line-height: 1.3em;
