@@ -143,19 +143,12 @@ function onSocketMessage(message) {
             break
             
         case "RADIO_PLAY_STATION": {
-            let station = store.search('id', options.id)
-            if (station) {
-                Mpc.play([station.streamURL])
-                store.add('recent', station);
-            }
-            else {
-                Radionet.getStation(options.id)
-                    .then(station => {
-                        Mpc.play([station.streamURL])
-                        store.add('recent',station)
-                    })
-                    .catch(error => sendMessage(ws, {key, options, error}));
-            }
+            Radionet.getStation(options.id)
+                .then(station => {
+                    Mpc.play([station.streamURL])
+                    store.add('recent',station)
+                })
+                .catch(error => sendMessage(ws, {key, options, error}));
             break;
         }
         
