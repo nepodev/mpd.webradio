@@ -4,11 +4,13 @@
  * radio.de api
  * get stations from radio.net
  * 
+ * @todo playlist parser (https://eu8.fastcast4u.com:2199/tunein/chrtre00.pls)
+ * 
  */
 "use strict";
 
-const Http = require("http");
 const querystring = require('querystring');
+const fetch = require('node-fetch')
 
 const MAIN_DOMAINS = {
     english: 'api.rad.io',
@@ -51,55 +53,31 @@ var request_options = {
     }
 }
 
+const FETCH_OPTIONS = {
+    headers: {
+        "user-agent": "XBMC Addon Radio"
+    }
+}
+
+var apiHost = 'http://' + MAIN_DOMAINS.english
+
+
 /**
  * 
  * @param {string} route 
  * @param {object} params 
  * @returns {promise}
  */
-const queryApi = (route, params) => {
-    let options = Object.assign({}, request_options, {path: BASE_PATH + route}),
-        queryString = querystring.stringify(params||{})
+const queryApi = (route, params={}) => {
+    let url = apiHost + BASE_PATH + route,
+        queryString = querystring.stringify(params)
     
     if (queryString) {
-        options.path += '?' + queryString
+        url += '?' + queryString
     }
 
-    // return new pending promise
-    return new Promise((resolve, reject) => {
-        const request = Http.get(options, (response) => {
-            const { statusCode } = response;
-            const contentType = response.headers['content-type']
-            let rawData = '',
-                error
-
-            if (statusCode < 200 || statusCode > 299) {
-                error = new Error(`Failed to load page, status code: ${statusCode}`)
-            }
-            else if (!/^application\/json/.test(contentType)) {
-                error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`)
-            }
-
-            if (error) {
-                response.resume()
-                reject(error)
-            }
-
-            response.setEncoding('utf8')
-            response.on('data', (chunk) => { rawData += chunk; })
-            response.on('end', () => {
-                try {
-                    const parsedData = JSON.parse(rawData);
-                    resolve(parsedData)
-                }
-                catch (e) {
-                    reject(e)
-                }
-            });
-        });
-        request.on('error', (err) => reject(err))
-    });
-};
+    return fetch(url, FETCH_OPTIONS).then(r => r.json())
+}
 
 /**
  * if streamURL is a playlist we extract a usabel url from streamUrls and replace streamURL
@@ -165,7 +143,7 @@ const mapSearchResult = result => {
     return list
 }
 
-const Radionet = module.exports = {
+const Radionet = {
 
     /**
      * 
@@ -176,7 +154,8 @@ const Radionet = module.exports = {
         //radionet_options = options;
         let {language} = options;
         if (language) {
-            request_options.host = MAIN_DOMAINS[language]
+            apiHost = 'http://' + MAIN_DOMAINS[language]
+            //request_options.host = MAIN_DOMAINS[language]
         }
     },
 
@@ -374,4 +353,6 @@ const Radionet = module.exports = {
     get sort_types() {
         return SORT_TYPES.slice(0)
     }
-};
+}
+
+module.exports = Radionet
