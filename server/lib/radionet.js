@@ -4,9 +4,11 @@
  * radio.de api
  * get stations from radio.net
  * 
- * @todo playlist parser (https://eu8.fastcast4u.com:2199/tunein/chrtre00.pls)
- * 
+ * @todo playlist parser 
+ * Bob's SKA Radio: https://eu8.fastcast4u.com:2199/tunein/chrtre00.pls
+ * SKAspot Radio: https://listen.radionomy.com/skaspotradio.m3u
  */
+
 "use strict";
 
 const querystring = require('querystring');
@@ -93,10 +95,22 @@ const getStationStreamURL = station => {
     return station
 }
 const extractStreamUrl = station => {
-    let streams = station.streamUrls||[]
+    let streams = station.streamUrls||[],
+        url=''
 
-    return streams[0] ? streams[0].streamUrl : ''
+    streams.forEach(item => {
+        const ext = item.streamUrl.substr(-4).toLowerCase()
+        if (PLAYLIST_SUFFIX.indexOf(ext) === -1) {
+            url = item.streamUrl
+        }
+    })
+    if (url === '') {
+        url = streams[0] ? streams[0].streamUrl : ''
+    }
+
+    return url
 }
+
 const mapStation = station => {
     let s = {
         _orig: station,
