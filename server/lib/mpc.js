@@ -27,6 +27,14 @@ const MPC_CONNECTING = 2;
 const MPC_RECONNECTING = 3;
 const MPC_READY = 4;
 
+const PLAYLIST_SUFFIX = [
+    '.pls',
+    '.xml',
+    '.asx',
+    '.m3u'
+]
+
+
 var mpc = null;
 var mpcStatus = MPC_DISCONNECTED;
 
@@ -90,6 +98,11 @@ function reconnect() {
     }, 3000);
 }
 
+const isPlaylist = file => {
+    const ext = file.substr(-4).toLowerCase()
+    return PLAYLIST_SUFFIX.includes(ext)
+}
+
 /**
  * 
  * @param {string} command 
@@ -98,9 +111,10 @@ function reconnect() {
  */
 function doCommand(command, params=[]) {
     if (command === 'play' && typeof params[0] === 'string') {
+        let add = isPlaylist(params[0]) ? 'load' : 'add'
         mpc.sendCommands([
             mpd.cmd('clear', []),
-            mpd.cmd('add', params),
+            mpd.cmd(add, params),
             mpd.cmd('play', []),
             mpd.cmd('repeat',[1])
         ]);
