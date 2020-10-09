@@ -26,7 +26,6 @@ const CATEGORY_TYPES = [
     'country',
     'genre',
     'language',
-    'top',
     'topic'
 ];
 
@@ -45,15 +44,6 @@ const SORT_TYPES = [
     'RANK',
     'STATION_NAME'
 ]
-
-var request_options = {
-    host: MAIN_DOMAINS.english,
-    path: "",
-    method: "GET",
-    headers: {
-        "user-agent": "XBMC Addon Radio"
-    }
-}
 
 const FETCH_OPTIONS = {
     headers: {
@@ -81,19 +71,6 @@ const queryApi = (route, params={}) => {
     return fetch(url, FETCH_OPTIONS).then(r => r.json())
 }
 
-/**
- * if streamURL is a playlist we extract a usabel url from streamUrls and replace streamURL
- * 
- * @deprecated
- * @param {object} station 
- * @returns {object}
- */
-const getStationStreamURL = station => {
-    if (Array.isArray(station.streamUrls)) {
-        station.streamURL = station.streamUrls[0]
-    }
-    return station
-}
 const extractStreamUrl = station => {
     let streams = station.streamUrls||[],
         url=''
@@ -254,6 +231,32 @@ const Radionet = {
     {
         return queryApi('v2/search/stations', { query, pageindex, sizeperpage, sorttype })
             .then(mapSearchResult)
+    },
+
+    /**
+     * 
+     * @param {string} category 
+     * @param  {...any} params 
+     */
+    getStationsByCategory(category, ...params) {
+        switch (category)
+        {
+            case 'genre':
+                return this.getStationsByGenre(...params)
+            case 'topic':
+                return this.getStationsByTopic(...params)
+            case 'country':
+                return this.getStationsByCountry(...params)
+            case 'city':
+                return this.getStationsByCity(...params)
+            case 'language':
+                return this.getStationsByLanguage(...params)
+            default:
+                return new Promise((res, rej) => {
+                    rej(new Error('Unknown Category'))
+                })
+        }
+
     },
 
     /**
