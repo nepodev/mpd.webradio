@@ -198,36 +198,14 @@ const Radionet = {
     },
 
     /**
-     * search stations
+     * Fulltext station search
      * 
-     * @param {object} params {category: {string}, query: <string>, offset: <integer>, limit: <integer>}
+     * @param {string} query searchterm
+     * @param {integer} pageindex optional. default 1
+     * @param {integer} sizeperpage optional. default 50
+     * @param {string} sorttype optional. default STATION_NAME
      */
-    searchStations (params)
-    {
-        let pageindex = params.offset||0
-        let sizeperpage = params.limit||50
-
-        if (params.category) {
-            switch (params.category)
-            {
-                case 'genre':
-                    return this.getStationsByGenre(params.query, pageindex, sizeperpage)
-                case 'topic':
-                    return this.getStationsByTopic(params.query, pageindex, sizeperpage)
-                case 'language':
-                    return this.getStationsByLanguage(params.query, pageindex, sizeperpage)
-                case 'country':
-                    return this.getStationsByCountry(params.query, pageindex, sizeperpage)
-                case 'city':
-                    return this.getStationsByCity(params.query, pageindex, sizeperpage)
-            }
-        }
-        else if (params.query) {
-            return this.searchStationsByString(params.query, pageindex, sizeperpage)
-        }
-    },
-
-    searchStationsByString(query, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
+    searchStations(query, pageindex=1, sizeperpage=50, sorttype='STATION_NAME')
     {
         return queryApi('v2/search/stations', { query, pageindex, sizeperpage, sorttype })
             .then(mapSearchResult)

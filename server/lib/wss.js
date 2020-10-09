@@ -67,7 +67,7 @@ const sendStationList = (ws, key, options) => {
             break;
 
         case "search":
-            Radionet.searchStations({query, offset, limit})
+            Radionet.searchStations(query, offset, limit)
                 .then(data => sendMessage(ws, {key, options, data}))
                 .catch(error => sendMessage(ws, {key, options, error}));
             break;
