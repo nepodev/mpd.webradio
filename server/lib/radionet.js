@@ -99,11 +99,11 @@ const extractStreamUrl = station => {
         url=''
 
     streams.forEach(item => {
-        const ext = item.streamUrl.substr(-4).toLowerCase()
-        if (PLAYLIST_SUFFIX.indexOf(ext) === -1) {
+        if (! isPlaylist(item.streamUrl)) {
             url = item.streamUrl
         }
     })
+
     if (url === '') {
         url = streams[0] ? streams[0].streamUrl : ''
     }
@@ -111,14 +111,36 @@ const extractStreamUrl = station => {
     return url
 }
 
+/**
+ * 
+ * @param {string} file 
+ */
+const isPlaylist = (uri) => {
+    const ext = uri.substr(-4)
+    return (PLAYLIST_SUFFIX.indexOf(ext) !== -1)
+}
+
+/**
+ * 
+ * @param {mixed} val 
+ */
+const getValue = (val) => {
+    if (val !== null && typeof val === 'object' && val.hasOwnProperty('value')) {
+        return val.value
+    }
+    return val
+}
+
 const mapStation = station => {
     let s = {
         _orig: station,
         id: station.id,
         streamURL: extractStreamUrl(station),
-        description: station.description,
-        shortDescription: station.shortDescription||''
     }
+
+    s.description = getValue(station.description)
+    s.shortDescription = getValue(station.shortDescription)
+    s.name = getValue(station.name)
 
     THUMB_KEYS.some(key => {
         if (station[key]) {
@@ -134,7 +156,7 @@ const mapStation = station => {
         s.genres = station.genres
     }
 
-    s.name = station.name.value ? station.name.value : station.name
+    
 
     return s
 }
