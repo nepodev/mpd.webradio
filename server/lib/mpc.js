@@ -28,10 +28,12 @@ const MPC_RECONNECTING = 3;
 const MPC_READY = 4;
 
 const PLAYLIST_SUFFIX = [
-    '.pls',
-    '.xml',
     '.asx',
-    '.m3u'
+    '.cue',
+    '.m3u',
+    '.pls',
+    '.rss',
+    '.xml'
 ]
 
 
