@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "data-store": "^4.0.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graceful-fs": "^4.2.4",
     "mpd": "^1.3.0",
     "node-fetch": "^2.6.1",
